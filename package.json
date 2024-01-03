@@ -1,0 +1,16 @@
+{
+  "name": "pdf-compare",
+  "version": "1.0.0",
+  "description": "A tool to compare pdfs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Prajwal Haniya",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pdf-lib": "^1.17.1",
+    "pdf2json": "^3.0.5"
+  }
+}
