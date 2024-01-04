@@ -1,7 +1,6 @@
 const fs = require('fs');
 const { PDFDocument } = require('pdf-lib');
 const PDFParser = require('pdf2json');
-const jsonDiff = require('json-diff');
 const { PDFExtract } = require('pdf.js-extract');
 
 const pdf_1 = `pdfs/1.pdf`;
@@ -63,7 +62,7 @@ const self = module.exports = {
     getPdf2Content: () => new Promise((resolve, reject) => {
         const pdfExtract = new PDFExtract();
         const options = {};
-        pdfExtract.extract('pdfs/sample.pdf', options, (err, data) => {
+        pdfExtract.extract('pdfs/2.pdf', options, (err, data) => {
         if (err) reject(err);
             resolve(data);
         });
@@ -102,15 +101,18 @@ const self = module.exports = {
 
     checkDifference: async (arr1, arr2) => {
         const diffMap = new Map();
-       if (arr1.length || arr2.length) {
-        const maxLength = Math.max(arr1.length, arr2.length);
-        for (let i = 0; i < maxLength; i++) {
-            const obj = {};
-            obj[`P1L${i}`] = arr1[i]?.str || 'NA';
-            obj[`P2L${i}`] = arr2[i]?.str || 'NA';
-            diffMap.set(i, obj);
+        if (arr1.length || arr2.length) {
+            const maxLength = Math.max(arr1.length, arr2.length);
+            
+            for (let i = 0; i < maxLength; i++) {
+                const obj = {};
+                obj[`P1L${i}`] = arr1[i]?.str || 'NA';
+                obj[`P2L${i}`] = arr2[i]?.str || 'NA';
+                if (arr1[i]?.str !== arr2[i]?.str) {
+                    diffMap.set(i, obj);
+                }
+            }
+            return diffMap;
         }
-        return diffMap;
-       }
     }
 }
