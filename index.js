@@ -14,9 +14,11 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/compare-pdfs', async (req, res) => {
-    const data = await services.getPagesCount();
-    await services.getMetadata();
-    await services.getContents();
+    const pagesCount = await services.getPagesCount();
+    const metadata = await services.getMetadata();
+    const contents = await services.getContents();
+
+    const data = { pagesCount, metadata, contents };
     res.json(data);
 })
 
