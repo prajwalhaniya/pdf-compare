@@ -52,35 +52,19 @@ const self = module.exports = {
     },
 
     getPdf1Content: () => new Promise((resolve, reject) => {
-        // const pdfParser_1 = new PDFParser();
-        // pdfParser_1.loadPDF(pdf_1);
-        // pdfParser_1.on("pdfParser_dataReady", pdfTextData => {
-        //     const rawText = pdfTextData.Pages[0].Texts.map((text) =>
-        //     Buffer.from(text.R[0].T, 'base64').toString('utf-8'));
-        //    resolve(rawText);
-        // });
-        // pdfParser_1.on("data", page => resolve(page));
         const pdfExtract = new PDFExtract();
-        const options = {}; /* see below */
+        const options = {};
         pdfExtract.extract('pdfs/1.pdf', options, (err, data) => {
-        if (err) return console.log(err);
+        if (err) reject(err);
             resolve(data);
         });
 }),
 
     getPdf2Content: () => new Promise((resolve, reject) => {
-        // const pdfParser_2 = new PDFParser();
-        // pdfParser_2.loadPDF(pdf_2);
-        // pdfParser_2.on("data", page => resolve(page));
-        // pdfParser_2.on("pdfParser_dataReady", pdfTextData => {
-        //     const rawText = pdfTextData.Pages[0].Texts.map((text) =>
-        //     Buffer.from(text.R[0].T, 'base64').toString('utf-8'));
-        //    resolve(rawText);
-        // });
         const pdfExtract = new PDFExtract();
         const options = {};
-        pdfExtract.extract('pdfs/2.pdf', options, (err, data) => {
-        if (err) return console.log(err);
+        pdfExtract.extract('pdfs/sample.pdf', options, (err, data) => {
+        if (err) reject(err);
             resolve(data);
         });
     }),
@@ -103,14 +87,30 @@ const self = module.exports = {
             };
 
             for (let j = 0; j < countOfPagesOfPdf2; j++) {
-                contentsOfPdf2.push(...pagesOfPdf2[i].content);
+                contentsOfPdf2.push(...pagesOfPdf2[j].content);
             }
 
             // check the difference with string that is parsed
-           
+
+            const difference = await self.checkDifference(contentsOfPdf1, contentsOfPdf2);
+            console.log({ difference });
         } catch (error) {
             console.log('Error while reading the contents of pdfs', error);
             return { success: false, message: 'Error occured while getting the contents of pdf' };
         }
     },
+
+    checkDifference: async (arr1, arr2) => {
+        const diffMap = new Map();
+       if (arr1.length || arr2.length) {
+        const maxLength = Math.max(arr1.length, arr2.length);
+        for (let i = 0; i < maxLength; i++) {
+            const obj = {};
+            obj[`P1L${i}`] = arr1[i]?.str || 'NA';
+            obj[`P2L${i}`] = arr2[i]?.str || 'NA';
+            diffMap.set(i, obj);
+        }
+        return diffMap;
+       }
+    }
 }
