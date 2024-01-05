@@ -21,6 +21,7 @@ const self = module.exports = {
                 };
 
                 const obj = {
+                    meta: data?.meta?.info,
                     totalPages: countOfPagesOfPdf1,
                     content: contentsOfPdf1
                 }
@@ -45,6 +46,7 @@ const self = module.exports = {
                     contentsOfPdf2.push(...pagesOfPdf2[j].content);
                 }
                 const obj = {
+                    meta: data?.meta?.info,
                     totalPages: countOfPagesOfPdf2,
                     content: contentsOfPdf2
                 }
@@ -73,8 +75,13 @@ const self = module.exports = {
         try {
             const pdf1_data = await self.getPdf1Content();
             const pdf2_data = await self.getPdf2Content();
+            
+            const metaDifference = {
+                pdf1_meta_info: pdf1_data.meta,
+                pdf2_meta_info: pdf2_data.meta
+            }
 
-            const pages = {
+            const pagesDifference = {
                 pdf1_total_pages: pdf1_data.totalPages,
                 pdf2_total_pages: pdf2_data.totalPages
             }
@@ -82,8 +89,8 @@ const self = module.exports = {
             const contentDifferenceMap = await self.checkDifferenceInContent(pdf1_data.content, pdf2_data.content);
             const contentDifference = Array.from(contentDifferenceMap.values()).map(value => ({ key: value }));
             
-            console.log({ pages, contentDifferenceMap })
-            return { success: true, difference: { pages, contentDifference} }
+            console.log({ metaDifference, pagesDifference, contentDifferenceMap })
+            return { success: true, difference: { metaDifference, pagesDifference, contentDifference} }
         } catch (error) {
             console.log('Error while reading the contents of pdfs', error);
             return { success: false, message: 'Error occured while getting the contents of pdf' };
