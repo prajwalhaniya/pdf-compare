@@ -90,7 +90,12 @@ const self = module.exports = {
             const contentDifference = Array.from(contentDifferenceMap.values()).map(value => ({ key: value }));
             
             console.log({ metaDifference, pagesDifference, contentDifferenceMap })
-            return { success: true, difference: { metaDifference, pagesDifference, contentDifference} }
+
+            if (contentDifference?.length) {
+                return { success: true, result: { message: 'Files are different', difference: { contentDifference }}}
+            } else {
+                return { success: true, result: { message: 'Files are identical', difference: {} } }
+            }
         } catch (error) {
             console.log('Error while reading the contents of pdfs', error);
             return { success: false, message: 'Error occured while getting the contents of pdf' };
