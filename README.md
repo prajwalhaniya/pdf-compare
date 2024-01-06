@@ -22,10 +22,7 @@ When you call the API `localhost:3005/compare-pdfs` if the pdfs are processed s 
 
 2. When you load `sample-3.pdf` & `sample-4.pdf`.
 
-<img src="assets/output-1.png" width="150" height="100" style="margin-right: 1rem">
-<img src="assets/output-2.png" width="150" height="100" style="margin-right: 1rem">
-<img src="assets/output-3.png" width="150" height="100" style="margin-right: 1rem">
-<img src="assets/output-4.png" width="150" height="100">
+<img src="assets/output-1.png" width="150" height="100" style="margin-right: 1rem"> <img src="assets/output-2.png" width="150" height="100" style="margin-right: 1rem"> <img src="assets/output-3.png" width="150" height="100" style="margin-right: 1rem"> <img src="assets/output-4.png" width="150" height="100">
 
 
 
