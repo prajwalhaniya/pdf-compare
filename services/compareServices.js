@@ -1,8 +1,9 @@
-const fs = require('fs');
 const { PDFExtract } = require('pdf.js-extract');
+const colors = require('colors')
+const Diff = require('diff');
 
-const pdf_1 = `pdfs/sample-1.pdf`;
-const pdf_2 = `pdfs/sample-2.pdf`;
+const pdf_1 = `pdfs/1.pdf`;
+const pdf_2 = `pdfs/2.pdf`;
 
 const self = module.exports = {
     getPdf1Content: () => new Promise((resolve, reject) => {
@@ -56,19 +57,38 @@ const self = module.exports = {
     }),
 
     checkDifferenceInContent: async (arr1, arr2) => {
+        const pdf1_content_strings = [];
+        const pdf2_content_strings = [];
+    
         const diffMap = new Map();
+
         if (arr1.length || arr2.length) {
             const maxLength = Math.max(arr1.length, arr2.length); 
             for (let i = 0; i < maxLength; i++) {
+                pdf1_content_strings.push(arr1[i]?.str || '');
+                pdf2_content_strings.push(arr2[i]?.str || '');
+
                 const obj = {};
                 obj[`P1L${i}`] = arr1[i]?.str || 'NA';
                 obj[`P2L${i}`] = arr2[i]?.str || 'NA';
+
                 if (arr1[i]?.str !== arr2[i]?.str) {
                     diffMap.set(i, obj);
                 }
             }
-            return diffMap;
+
+            const string1_for_compare = pdf1_content_strings.join(' ');
+            const string2_for_compare = pdf2_content_strings.join(' ');
+
+            const diff = Diff.diffChars(string1_for_compare, string2_for_compare);
+            let colouredDiff;
+            diff.forEach((part) => {
+                const color = part?.added ? 'green' : part?.removed ? 'red' : 'grey';
+                process.stderr.write(part.value[color]);
+            });
+            return diff;
         }
+
     },
 
     comparePdfs:async () => {
@@ -86,13 +106,11 @@ const self = module.exports = {
                 pdf2_total_pages: pdf2_data.totalPages
             }
 
-            const contentDifferenceMap = await self.checkDifferenceInContent(pdf1_data.content, pdf2_data.content);
-            const contentDifference = Array.from(contentDifferenceMap.values()).map(value => ({ key: value }));
-            
-            console.log({ metaDifference, pagesDifference, contentDifferenceMap })
+            const difference = await self.checkDifferenceInContent(pdf1_data.content, pdf2_data.content);
+            console.log({ metaDifference, pagesDifference })
 
-            if (contentDifference?.length) {
-                return { success: true, result: { message: 'Files are different', difference: { contentDifference }}}
+            if (difference?.length) {
+                return { success: true, result: { message: 'Files are different', difference: { difference }}}
             } else {
                 return { success: true, result: { message: 'Files are identical', difference: {} } }
             }
