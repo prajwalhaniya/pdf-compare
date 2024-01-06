@@ -2,8 +2,8 @@ const { PDFExtract } = require('pdf.js-extract');
 const colors = require('colors')
 const Diff = require('diff');
 
-const pdf_1 = `pdfs/1.pdf`;
-const pdf_2 = `pdfs/2.pdf`;
+const pdf_1 = `pdfs/sample-1.pdf`;
+const pdf_2 = `pdfs/sample-2.pdf`;
 
 const self = module.exports = {
     getPdf1Content: () => new Promise((resolve, reject) => {
@@ -81,11 +81,6 @@ const self = module.exports = {
             const string2_for_compare = pdf2_content_strings.join(' ');
 
             const diff = Diff.diffChars(string1_for_compare, string2_for_compare);
-            let colouredDiff;
-            diff.forEach((part) => {
-                const color = part?.added ? 'green' : part?.removed ? 'red' : 'grey';
-                process.stderr.write(part.value[color]);
-            });
             return diff;
         }
 
@@ -107,11 +102,17 @@ const self = module.exports = {
             }
 
             const difference = await self.checkDifferenceInContent(pdf1_data.content, pdf2_data.content);
-            console.log({ metaDifference, pagesDifference })
+            // console.log({ metaDifference, pagesDifference })
 
             if (difference?.length) {
+                console.log('Files are different');
+                difference.forEach((part) => {
+                    const color = part?.added ? 'green' : part?.removed ? 'red' : 'white';
+                    process.stderr.write(part.value[color]);
+                });
                 return { success: true, result: { message: 'Files are different', difference: { difference }}}
             } else {
+                console.log('Files are identical');
                 return { success: true, result: { message: 'Files are identical', difference: {} } }
             }
         } catch (error) {
