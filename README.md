@@ -12,7 +12,7 @@ A simple software tool to compare two pdfs.
 
 At present, few sample files from the pdfs folder are used. Once you clone the repo you can add your different files & change the import of files accordingly.
 
-When you call the API `localhost:3005/compare-pdfs` if the pdfs are processed s uccessfully, you can see the below objects in the console.
+When you call the API `localhost:3005/compare-pdfs` if the pdfs are processed successfully, you can see the below objects in the console.
 
 ### Examples
 
